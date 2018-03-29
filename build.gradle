@@ -1,0 +1,74 @@
+plugins {
+    id 'groovy'
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+    id 'com.gradle.plugin-publish' version '0.9.10'
+    id 'com.github.hierynomus.license' version '0.14.0'
+}
+
+group = 'org.xennis'
+version = '0.1.0'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.google.cloud:google-cloud-storage:1.24.0'
+    testCompile 'com.netflix.nebula:nebula-test:6.3.0'
+}
+
+gradlePlugin {
+    plugins {
+        googleCloudStorage {
+            id = 'org.xennis.gradle-google-cloud-storage'
+            implementationClass = 'org.xennis.gradle.googlecloudstorage.GoogleCloudStoragePlugin'
+        }
+    }
+}
+
+pluginBundle {
+    website = 'https://github.com/Xennis/gradle-google-cloud-storage-plugin'
+    vcsUrl = 'https://github.com/Xennis/gradle-google-cloud-storage-plugin.git'
+
+    plugins {
+        googleCloudStorage {
+            id = 'org.xennis.gradle-google-cloud-storage'
+            displayName = 'Google Cloud Storage'
+            description = 'Plugin to wrap the Google Cloud Storage Java library'
+            tags = ['google', 'cloud', 'storage']
+        }
+    }
+}
+
+task sourceJar( type: Jar ) {
+    from sourceSets.main.allGroovy
+}
+
+publishing {
+    publications {
+        gradlePlugin( MavenPublication ) {
+            artifactId archivesBaseName
+            from components.java
+
+            artifact sourceJar {
+                classifier 'sources'
+            }
+
+            pom.withXml {
+                asNode().children().last() + {
+                    resolveStrategy = Closure.DELEGATE_FIRST
+                    description 'Plugin to wrap the Google Cloud Storage Java library'
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
