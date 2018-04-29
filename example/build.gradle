@@ -10,7 +10,7 @@ buildscript {
 
 apply plugin: 'org.xennis.gradle-google-cloud-storage'
 
-task('exampleUploadDiretory', type: org.xennis.gradle.googlecloudstorage.GoogleCloudStorageUploadDirectoryTask) {
+task('exampleUploadDirectory', type: org.xennis.gradle.googlecloudstorage.GoogleCloudStorageUploadDirectoryTask) {
     inputDir = file( 'src/main/resources' )
     bucketName = 'example-bucket'
 }
